@@ -49,7 +49,7 @@ export default function Home() {
         <Container>
           <Tab.Container id="left-tabs-example" defaultActiveKey="first">
             <Row>
-              <Col sm={3}>
+              <Col sm={3} className={styles.border}>
                 <Nav variant="pills" className="flex-column">
                   <Nav.Item className={styles.nav__item}>
                     <Nav.Link eventKey="first">Author</Nav.Link>
