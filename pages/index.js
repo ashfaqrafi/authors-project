@@ -1,11 +1,41 @@
-import React from "react";
-import ListItemComponent from "../components/ListItemComponent";
+import React, { useState, useEffect } from "react";
+import AuthorListItemComponent from "../components/AuthorListItemComponent";
+import FavoriteAuthorListItemComponent from "../components/FavoriteAuthorListItemComponent";
 import { Tab, Nav, Container, Row, Col } from "react-bootstrap";
 import Head from "next/head";
-import Image from "next/image";
 import styles from "../styles/Home.module.css";
 
 export default function Home() {
+  let [responseData, setResponseData] = useState([]);
+  let [favoriteList, setFavoriteList] = useState([]);
+
+  useEffect(() => {
+    fetch("https://api.quotable.io/authors?limit=10&skip=20")
+      .then((res) => res.json())
+      .then((data) => {
+        setResponseData(
+          data.results.map((result) => ({ ...result, isFavorite: false }))
+        );
+      });
+  }, []);
+
+  const handleClick = (a) => {
+    const author = responseData.find((el) => el._id === a._id);
+    author.isFavorite = !author.isFavorite;
+    const list = responseData.map((el) =>
+      author._id === el._id ? author : el
+    );
+    setResponseData(list);
+    const favoriteAuthor = list.filter(function (el) {
+      return el.isFavorite === true;
+    });
+    setFavoriteList(favoriteAuthor);
+  };
+
+  useEffect(() => {
+    localStorage.setItem("favoriteList", JSON.stringify(favoriteList));
+  }, [favoriteList]);
+
   return (
     <div className={styles.container}>
       <Head>
@@ -29,9 +59,17 @@ export default function Home() {
               <Col sm={9}>
                 <Tab.Content>
                   <Tab.Pane eventKey="first">
-                    <ListItemComponent />
+                    <AuthorListItemComponent
+                      responseData={responseData}
+                      handleClick={handleClick}
+                    />
                   </Tab.Pane>
-                  <Tab.Pane eventKey="second">World</Tab.Pane>
+                  <Tab.Pane eventKey="second">
+                    <FavoriteAuthorListItemComponent
+                      favoriteList={favoriteList}
+                      handleClick={handleClick}
+                    />
+                  </Tab.Pane>
                 </Tab.Content>
               </Col>
             </Row>
