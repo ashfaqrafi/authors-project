@@ -1,9 +1,11 @@
 import React from "react";
 import { Container, Row, Col } from "react-bootstrap";
+import { Oval } from "react-loader-spinner";
+import styles from "../styles/Home.module.css";
 import ListItemComponent from "./ListItemComponent";
 
 const FavoriteAuthorListItemComponent = (props) => {
-  const { favoriteList, handleClick } = props;
+  const { favoriteList, handleClick, isLoading } = props;
 
   return (
     <div>
@@ -26,6 +28,17 @@ const FavoriteAuthorListItemComponent = (props) => {
                 </Col>
               );
             })
+          ) : isLoading ? (
+            <div className={styles.loader}>
+              <Oval
+                ariaLabel="loading-indicator"
+                height={100}
+                width={100}
+                strokeWidth={3}
+                color="blue"
+                secondaryColor="grey"
+              />
+            </div>
           ) : (
             <p>No Data Found</p>
           )}

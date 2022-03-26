@@ -8,11 +8,14 @@ import styles from "../styles/Home.module.css";
 export default function Home() {
   let [responseData, setResponseData] = useState([]);
   let [favoriteList, setFavoriteList] = useState([]);
+  let [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    setIsLoading(true);
     fetch("https://api.quotable.io/authors?limit=10&skip=20")
       .then((res) => res.json())
       .then((data) => {
+        setIsLoading(false);
         setResponseData(
           data.results.map((result) => ({ ...result, isFavorite: false }))
         );
@@ -62,12 +65,14 @@ export default function Home() {
                     <AuthorListItemComponent
                       responseData={responseData}
                       handleClick={handleClick}
+                      isLoading={isLoading}
                     />
                   </Tab.Pane>
                   <Tab.Pane eventKey="second">
                     <FavoriteAuthorListItemComponent
                       favoriteList={favoriteList}
                       handleClick={handleClick}
+                      isLoading={isLoading}
                     />
                   </Tab.Pane>
                 </Tab.Content>
